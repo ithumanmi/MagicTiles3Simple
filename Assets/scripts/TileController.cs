@@ -1,0 +1,166 @@
+using UnityEngine;
+
+public class TileController : MonoBehaviour
+{
+    [Header("Movement")]
+    public float fallSpeed = 5f;
+    
+    [Header("Hit Zones")]
+    public float perfectY = -3.5f; // Vị trí Y cho "Perfect"
+    public float goodWindow = 0.5f; // Khoảng cho "Good"
+    public float perfectWindow = 0.2f; // Khoảng cho "Perfect"
+    
+    [Header("Visual Feedback")]
+    public GameObject perfectEffect;
+    public GameObject goodEffect;
+    public GameObject missEffect;
+    public GameObject tapEffectPrefab; // Gán là child object trong prefab
+    
+    private bool isActive = true;
+    private SpriteRenderer spriteRenderer;
+    
+    void Start()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        FitWidthToColumn();
+        // Đảm bảo có Collider2D
+        if (GetComponent<Collider2D>() == null)
+            gameObject.AddComponent<BoxCollider2D>();
+    }
+    
+    // Reset state when getting from pool
+    public void ResetState()
+    {
+        isActive = true;
+        if (tapEffectPrefab != null)
+            tapEffectPrefab.SetActive(false);
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.enabled = true;
+            spriteRenderer.color = Color.white;
+        }
+        FitWidthToColumn();
+        transform.localScale = Vector3.one;
+    }
+    
+    void FitWidthToColumn()
+    {
+        int gridWidth = 4;
+        var gridManager = FindObjectOfType<GridManager>();
+        if (gridManager != null)
+            gridWidth = gridManager.gridWidth;
+        float screenHeight = Camera.main.orthographicSize * 2f;
+        float screenWidth = screenHeight * Camera.main.aspect;
+        float columnWidth = screenWidth / gridWidth;
+        if (spriteRenderer != null)
+        {
+            float spriteWidth = spriteRenderer.bounds.size.x / transform.localScale.x;
+            float scaleX = columnWidth / spriteWidth;
+            transform.localScale = new Vector3(scaleX, transform.localScale.y, transform.localScale.z);
+        }
+    }
+    
+    void Update()
+    {
+        if (!isActive) return;
+        
+        transform.Translate(Vector3.down * fallSpeed * Time.deltaTime);
+        
+        // Lấy đáy camera
+        float cameraBottom = -Camera.main.orthographicSize;
+        float tileHeight = 1f;
+        if (spriteRenderer != null)
+            tileHeight = spriteRenderer.bounds.size.y;
+        float tileBottom = transform.position.y + tileHeight;
+        if (tileBottom < cameraBottom)
+        {
+            Missed();
+        }
+    }
+    
+    void OnMouseDown()
+    {
+        if (!isActive) return;
+
+        // Thêm điểm và tăng combo
+        GameManager.Instance.AddScore();
+        
+        // Hide original tile
+        if (spriteRenderer != null)
+            spriteRenderer.enabled = false;
+            
+        // Show tap effect and start scale down animation
+        if (tapEffectPrefab != null)
+        {
+            tapEffectPrefab.SetActive(true);
+            StartCoroutine(ScaleDownAndReturnToPool(tapEffectPrefab, 0.2f));
+        }
+        else
+        {
+            DeactivateAndReturnToPool();
+        }
+        
+        isActive = false;
+    }
+    
+    private System.Collections.IEnumerator ScaleDownAndReturnToPool(GameObject effect, float duration)
+    {
+        Vector3 startScale = effect.transform.localScale;
+        Vector3 endScale = Vector3.zero;
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            effect.transform.localScale = Vector3.Lerp(startScale, endScale, t / duration);
+            yield return null;
+        }
+        effect.transform.localScale = endScale;
+        DeactivateAndReturnToPool();
+    }
+    
+    void Missed()
+    {
+        isActive = false;
+        DeactivateAndReturnToPool();
+    }
+    
+    void ShowEffect(GameObject effectPrefab)
+    {
+        if (effectPrefab != null)
+        {
+            GameObject effect = Instantiate(effectPrefab, transform.position, Quaternion.identity);
+            Destroy(effect, 2f); // Destroy effect after 2 seconds
+        }
+    }
+    
+    // Visual feedback for tile state
+    public void SetTileColor(Color color)
+    {
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = color;
+        }
+    }
+    
+    // Optional: Add glow effect when approaching hit zone
+    public void AddGlowEffect()
+    {
+        if (spriteRenderer != null)
+        {
+            // Add a simple glow by changing material or adding a light
+            spriteRenderer.material.SetFloat("_EmissionIntensity", 0.5f);
+        }
+    }
+    
+    void DeactivateAndReturnToPool()
+    {
+        isActive = false;
+        if (tapEffectPrefab != null)
+            tapEffectPrefab.SetActive(false);
+        if (spriteRenderer != null)
+            spriteRenderer.enabled = true;
+        TilePooler.Instance.ReturnTile(gameObject);
+    }
+}
