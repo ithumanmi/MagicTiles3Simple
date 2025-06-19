@@ -4,14 +4,17 @@ using UnityEngine;
 public class TilePooler : MonoBehaviour
 {
     public static TilePooler Instance;
+    public static TilePooler HoldInstance;
     public GameObject tilePrefab;
     public int poolSize = 20;
+    public bool isHoldPool = false;
 
     private Queue<GameObject> pool = new Queue<GameObject>();
 
     void Awake()
     {
-        Instance = this;
+        if (isHoldPool) HoldInstance = this;
+        else Instance = this;
         for (int i = 0; i < poolSize; i++)
         {
             GameObject obj = Instantiate(tilePrefab);
@@ -34,6 +37,13 @@ public class TilePooler : MonoBehaviour
                 tileController.ResetState();
             }
             
+            // Reset TileControllerHoldToTop state
+            var tileHold = obj.GetComponent<TileControllerHoldToTop>();
+            if (tileHold != null)
+            {
+                tileHold.ResetState();
+            }
+            
             // Reset SpriteRenderer
             var spriteRenderer = obj.GetComponent<SpriteRenderer>();
             if (spriteRenderer != null)
@@ -41,7 +51,6 @@ public class TilePooler : MonoBehaviour
                 spriteRenderer.enabled = true;
                 spriteRenderer.color = Color.white;
             }
-            
             return obj;
         }
         else
@@ -55,5 +64,16 @@ public class TilePooler : MonoBehaviour
     {
         obj.SetActive(false);
         pool.Enqueue(obj);
+    }
+
+    // Static API cho quản lý chung
+    public static GameObject GetTile(bool isHold)
+    {
+        return isHold ? HoldInstance.GetTile() : Instance.GetTile();
+    }
+    public static void ReturnTile(GameObject obj, bool isHold)
+    {
+        if (isHold) HoldInstance.ReturnTile(obj);
+        else Instance.ReturnTile(obj);
     }
 } 

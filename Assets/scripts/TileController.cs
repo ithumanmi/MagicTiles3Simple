@@ -22,6 +22,7 @@ public class TileController : MonoBehaviour
     private bool isActive = true;
     private SpriteRenderer spriteRenderer;
     private Vector3 _tapEffectOriginalScale;
+    private int laneIndex = -1;
     
     void Start()
     {
@@ -101,7 +102,7 @@ public class TileController : MonoBehaviour
         isActive = false; // Dừng fall ngay lập tức
 
         // Thêm điểm và tăng combo
-        GameManager.Instance.AddScore();
+        GameManager.Instance.AddCombo(1);
         
         // Hide original tile
         if (spriteRenderer != null)
@@ -177,6 +178,7 @@ public class TileController : MonoBehaviour
             tapEffectBorderPrefab.SetActive(false);
         if (spriteRenderer != null)
             spriteRenderer.enabled = true;
-        TilePooler.Instance.ReturnTile(gameObject);
+        if (laneIndex >= 0 && TileSpawner.Instance != null) TileSpawner.Instance.SetLaneFree(laneIndex);
+        TilePooler.ReturnTile(gameObject, false); // false = tile thường
     }
 }

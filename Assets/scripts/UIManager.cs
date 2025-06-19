@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
+using TMPro;
 
 public class UIManager : MonoBehaviour
 {
     [Header("UI Elements")]
-    public Text scoreText;
-    public Text comboText;
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI comboText;
     public GameObject gameOverPanel;
     public Button restartButton;
     public Button pauseButton;
@@ -26,6 +28,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] private ParticleSystem[] comboParticles;
     private ParticleSystem _lastPlayedParticle;
 
+    [Header("Star Count Display")]
+    public TextMeshProUGUI starCountText;
+    public Transform starImage;
+    public float starShowDuration = 1f;
+
     void Start()
     {
         Debug.Log("UIManager: Bắt đầu khởi tạo");
@@ -33,7 +40,7 @@ public class UIManager : MonoBehaviour
         // Ẩn combo text khi bắt đầu
         if (comboText != null)
         {
-            comboText.gameObject.SetActive(false);
+            comboText.transform.localScale = Vector3.zero;
         }
     }
     
@@ -72,6 +79,14 @@ public class UIManager : MonoBehaviour
         if (scoreText != null)
         {
             scoreText.text = score.ToString();
+            // Hiệu ứng nhúng nhảy khi cộng điểm
+            scoreText.transform.DOKill();
+            scoreText.transform.localScale = Vector3.one * 0.7f;
+            scoreText.transform.DOScale(1.2f, 0.15f)
+                .SetEase(Ease.OutBack)
+                .OnComplete(() => {
+                    scoreText.transform.DOScale(1f, 0.15f).SetEase(Ease.InOutSine);
+                });
         }
         else
         {
@@ -111,15 +126,22 @@ public class UIManager : MonoBehaviour
 
         if (comboText != null)
         {
-            // Hiển thị và cập nhật combo text
             comboText.gameObject.SetActive(true);
             comboText.text = "x " + combo.ToString();
-            
-            // Hủy coroutine cũ nếu có
+
+            // Hủy tween cũ nếu có
+            comboText.transform.DOKill();
+            comboText.transform.localScale = Vector3.one * 0.7f;
+
+            // Scale pop lên 1.2 rồi về 1
+            comboText.transform.DOScale(1.5f, 0.15f)
+                .SetEase(Ease.OutBack)
+                .OnComplete(() => {
+                    comboText.transform.DOScale(1f, 0.15f).SetEase(Ease.InOutSine);
+                });
+
             CancelInvoke("HideComboText");
-            // Đặt lịch ẩn combo text sau 0.3s
-            Invoke("HideComboText", 0.8f);
-            
+            Invoke("HideComboText", 1f);
         }
         else
         {
@@ -127,11 +149,12 @@ public class UIManager : MonoBehaviour
         }
     }
     
-    private void HideComboText()
+    void HideComboText()
     {
         if (comboText != null)
         {
-            comboText.gameObject.SetActive(false);
+            comboText.transform.DOKill();
+            comboText.transform.DOScale(0, 0.15f).SetEase(Ease.InBack);
         }
     }
     
@@ -191,5 +214,38 @@ public class UIManager : MonoBehaviour
             comboText.gameObject.SetActive(false);
         }
         Debug.Log("UIManager: Reset stats");
+    }
+
+    public void ShowStarCountAtStarImage(int starCount)
+    {
+        if (starCountText != null && starImage != null)
+        {
+            starCountText.text = "x " + starCount.ToString();
+            starCountText.gameObject.SetActive(true);
+
+            // Đặt vị trí starCountText trùng với starImage
+            starCountText.rectTransform.position = starImage.position;
+
+            // Hiệu ứng scale pop
+            starCountText.transform.DOKill();
+            starCountText.transform.localScale = Vector3.one * 0.7f;
+            starCountText.transform.DOScale(1.2f, 0.15f)
+                .SetEase(Ease.OutBack)
+                .OnComplete(() => {
+                    starCountText.transform.DOScale(1f, 0.15f).SetEase(Ease.InOutSine);
+                });
+
+            CancelInvoke("HideStarShow");
+            Invoke("HideStarShow", starShowDuration);
+        }
+    }
+
+    private void HideStarShow()
+    {
+        if (starCountText != null)
+        {
+            starCountText.gameObject.SetActive(false);
+            starCountText.transform.localScale = Vector3.one;
+        }
     }
 } 
