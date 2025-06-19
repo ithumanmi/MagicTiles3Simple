@@ -1,4 +1,5 @@
 using UnityEngine;
+using DG.Tweening;
 
 public class TileController : MonoBehaviour
 {
@@ -15,9 +16,12 @@ public class TileController : MonoBehaviour
     public GameObject goodEffect;
     public GameObject missEffect;
     public GameObject tapEffectPrefab; // Gán là child object trong prefab
-    
+    public GameObject tapEffectBorderPrefab; // Gán là child object trong prefab
+    public ParticleSystem hitParticle; // Hiệu ứng particle khi chạm tile
+
     private bool isActive = true;
     private SpriteRenderer spriteRenderer;
+    private Vector3 _tapEffectOriginalScale;
     
     void Start()
     {
@@ -26,6 +30,11 @@ public class TileController : MonoBehaviour
         // Đảm bảo có Collider2D
         if (GetComponent<Collider2D>() == null)
             gameObject.AddComponent<BoxCollider2D>();
+        // Lưu lại scale gốc của tapEffectPrefab
+        if (tapEffectPrefab != null)
+        {
+            _tapEffectOriginalScale = tapEffectPrefab.transform.localScale;
+        }
     }
     
     // Reset state when getting from pool
@@ -34,12 +43,19 @@ public class TileController : MonoBehaviour
         isActive = true;
         if (tapEffectPrefab != null)
             tapEffectPrefab.SetActive(false);
+        if (tapEffectBorderPrefab != null)
+            tapEffectBorderPrefab.SetActive(false);
         if (spriteRenderer == null)
             spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null)
         {
             spriteRenderer.enabled = true;
             spriteRenderer.color = Color.white;
+        }
+        if (hitParticle != null)
+        {
+            hitParticle.Stop();
+            hitParticle.gameObject.SetActive(false);
         }
         FitWidthToColumn();
         transform.localScale = Vector3.one;
@@ -64,7 +80,6 @@ public class TileController : MonoBehaviour
     
     void Update()
     {
-        if (!isActive) return;
         
         transform.Translate(Vector3.down * fallSpeed * Time.deltaTime);
         
@@ -83,6 +98,7 @@ public class TileController : MonoBehaviour
     void OnMouseDown()
     {
         if (!isActive) return;
+        isActive = false; // Dừng fall ngay lập tức
 
         // Thêm điểm và tăng combo
         GameManager.Instance.AddScore();
@@ -90,39 +106,34 @@ public class TileController : MonoBehaviour
         // Hide original tile
         if (spriteRenderer != null)
             spriteRenderer.enabled = false;
-            
-        // Show tap effect and start scale down animation
+
+        // Kích hoạt particle effect
+        if (hitParticle != null)
+        {
+            hitParticle.gameObject.SetActive(true);
+            hitParticle.Play();
+        }
+        if (tapEffectBorderPrefab != null)
+            tapEffectBorderPrefab.SetActive(true);
+        // Show tap effect and start scale down animation bằng DOTween
         if (tapEffectPrefab != null)
         {
             tapEffectPrefab.SetActive(true);
-            StartCoroutine(ScaleDownAndReturnToPool(tapEffectPrefab, 0.2f));
-        }
-        else
-        {
-            DeactivateAndReturnToPool();
+            tapEffectPrefab.transform.DOScale(Vector3.zero, 0.5f)
+                .SetEase(Ease.InBack);
+                
         }
         
-        isActive = false;
-    }
-    
-    private System.Collections.IEnumerator ScaleDownAndReturnToPool(GameObject effect, float duration)
-    {
-        Vector3 startScale = effect.transform.localScale;
-        Vector3 endScale = Vector3.zero;
-        float t = 0f;
-        while (t < duration)
-        {
-            t += Time.deltaTime;
-            effect.transform.localScale = Vector3.Lerp(startScale, endScale, t / duration);
-            yield return null;
-        }
-        effect.transform.localScale = endScale;
-        DeactivateAndReturnToPool();
     }
     
     void Missed()
     {
         isActive = false;
+        if (hitParticle != null)
+        {
+            hitParticle.Stop();
+            hitParticle.gameObject.SetActive(false);
+        }
         DeactivateAndReturnToPool();
     }
     
@@ -158,7 +169,12 @@ public class TileController : MonoBehaviour
     {
         isActive = false;
         if (tapEffectPrefab != null)
+        {
             tapEffectPrefab.SetActive(false);
+            tapEffectPrefab.transform.localScale = _tapEffectOriginalScale;
+        }
+        if (tapEffectBorderPrefab != null)
+            tapEffectBorderPrefab.SetActive(false);
         if (spriteRenderer != null)
             spriteRenderer.enabled = true;
         TilePooler.Instance.ReturnTile(gameObject);

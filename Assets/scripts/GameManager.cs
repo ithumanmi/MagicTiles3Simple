@@ -11,7 +11,8 @@ public class GameManager : MonoBehaviour
     private float lastHitTime = 0f;
     public int combo = 0;
     //public int maxCombo = 0;
-    
+
+
     [Header("Scoring")]
     public int perfectScore = 100;
     public int goodScore = 50;
@@ -29,7 +30,6 @@ public class GameManager : MonoBehaviour
     public AudioClip missSound;
     
     private bool isGameOver = false;
-    
     private void Awake()
     {
         Instance = this;
@@ -54,8 +54,7 @@ public class GameManager : MonoBehaviour
             Debug.Log(Time.time - lastHitTime);
             Debug.Log(comboResetTime);
             combo = 0;
-            if (uiManager != null)
-                uiManager.ShowCombo(combo);
+        
         }
     }
     
@@ -91,8 +90,12 @@ public class GameManager : MonoBehaviour
         if (uiManager != null)
         {
             uiManager.UpdateScore(score);
-            uiManager.ShowCombo(combo);
+            if(combo > 1)
+            {
+                uiManager.ShowCombo(combo);
+            }
         }
+
         if (progressBarWithStars != null)
         {
             progressBarWithStars.UpdateProgress(score);

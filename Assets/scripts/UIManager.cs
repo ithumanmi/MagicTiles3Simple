@@ -9,7 +9,8 @@ public class UIManager : MonoBehaviour
     public GameObject gameOverPanel;
     public Button restartButton;
     public Button pauseButton;
-    
+
+    [SerializeField] private TextScalingEffect[] _textScalingEffect;
     [Header("Score Display")]
     public Text perfectText;
     public Text goodText;
@@ -18,7 +19,13 @@ public class UIManager : MonoBehaviour
     private int perfectCount = 0;
     private int goodCount = 0;
     private int missCount = 0;
-    
+
+    private TextScalingEffect _lastTextScalingEffect;
+
+    [Header("Combo Particle Effects")]
+    [SerializeField] private ParticleSystem[] comboParticles;
+    private ParticleSystem _lastPlayedParticle;
+
     void Start()
     {
         Debug.Log("UIManager: Bắt đầu khởi tạo");
@@ -74,6 +81,34 @@ public class UIManager : MonoBehaviour
     
     public void ShowCombo(int combo)
     {
+        // Nếu hiệu ứng cũ đang play, dừng lại trước khi play hiệu ứng mới
+        if (_lastTextScalingEffect != null)
+        {
+            _lastTextScalingEffect.Stop();
+        }
+        var index = Random.Range(0, _textScalingEffect.Length - 1);
+        _lastTextScalingEffect = _textScalingEffect[index];
+        _lastTextScalingEffect.Play();
+
+        // Play random combo particle
+        if (comboParticles != null && comboParticles.Length > 0)
+        {
+            // Stop last played particle if still playing
+            if (_lastPlayedParticle != null && _lastPlayedParticle.isPlaying)
+            {
+                _lastPlayedParticle.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            }
+            int randIdx = Random.Range(0, comboParticles.Length);
+            _lastPlayedParticle = comboParticles[randIdx];
+            // Đặt vị trí particle trùng với vị trí của _lastTextScalingEffect
+            if (_lastTextScalingEffect != null)
+            {
+                _lastPlayedParticle.transform.position = _lastTextScalingEffect.transform.position;
+            }
+            _lastPlayedParticle.gameObject.SetActive(true);
+            _lastPlayedParticle.Play();
+        }
+
         if (comboText != null)
         {
             // Hiển thị và cập nhật combo text
