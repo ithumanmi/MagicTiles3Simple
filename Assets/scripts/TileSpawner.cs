@@ -36,7 +36,7 @@ public class TileSpawner : MonoBehaviour
         // Spawn tile thường
         if (timer >= beatInterval)
         {
-            SpawnTile();
+            SpawnTile(true);
             timer -= beatInterval;
         }
 
@@ -69,7 +69,7 @@ public class TileSpawner : MonoBehaviour
                 tileHeight = sr.bounds.size.y;
         }
         float topY = Camera.main.orthographicSize;
-        float spawnY = topY + tileHeight / 2f;
+        float spawnY = topY + tileHeight+ tileHeight/2;
         Vector3 spawnPos = gridManager.GetColumnCenter(lane, spawnY);
 
         tileObj.transform.position = spawnPos;

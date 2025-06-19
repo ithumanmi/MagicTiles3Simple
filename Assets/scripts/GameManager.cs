@@ -80,8 +80,7 @@ public class GameManager : MonoBehaviour
     }
     
     public void AddCombo(int _combo)
-    {
-        Debug.Log($"AddCombo called with score: {_combo}");  
+    { 
         if (isGameOver) return;
         combo = combo + _combo;
         score += combo;

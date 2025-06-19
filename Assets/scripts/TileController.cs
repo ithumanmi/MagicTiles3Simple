@@ -23,7 +23,7 @@ public class TileController : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Vector3 _tapEffectOriginalScale;
     private int laneIndex = -1;
-    
+   
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -129,12 +129,16 @@ public class TileController : MonoBehaviour
     
     void Missed()
     {
-        isActive = false;
+        if(isActive)
+        {
+            GameManager.Instance.GameOver();
+        }
         if (hitParticle != null)
         {
             hitParticle.Stop();
             hitParticle.gameObject.SetActive(false);
         }
+        ResetState();
         DeactivateAndReturnToPool();
     }
     

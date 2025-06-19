@@ -27,6 +27,8 @@ public class TileControllerHoldToTop : MonoBehaviour
     public Transform star; // Ngôi sao (con của tile hold)
     private bool isHoldingArrow = false;
     private bool isPointerInside = false; // Để kiểm tra khi chạm vào star
+    private bool isArrowHeld = false;
+
     private void Awake()
     {
         originalY = transform.localScale.y; // Lưu lại giá trị gốc của Y scale
@@ -47,7 +49,7 @@ public class TileControllerHoldToTop : MonoBehaviour
 
     void Update()
     {
-        if (!isActive) return;
+       
         // Tile rơi bình thường
         transform.Translate(Vector3.down * fallSpeed * Time.deltaTime);
 
@@ -76,6 +78,7 @@ public class TileControllerHoldToTop : MonoBehaviour
         {
             if (arrow.transform.position.y >= endPoint.position.y)
             {
+                isActive = false; // Dừng rơi
                 GameManager.Instance.AddCombo(1);
                 ReleaseArrow();
             }
@@ -86,8 +89,10 @@ public class TileControllerHoldToTop : MonoBehaviour
 
     void Missed()
     {
-        isActive = false;
-       
+        if(isActive)
+        {
+            GameManager.Instance.GameOver();
+        }
         DeactivateAndReturnToPool();
     }
 
@@ -113,7 +118,6 @@ public class TileControllerHoldToTop : MonoBehaviour
     {
         isActive = true;
         isHolding = false;
-      
         if (spriteRenderer == null)
             spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null)

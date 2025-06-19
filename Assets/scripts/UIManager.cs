@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
     public GameObject gameOverPanel;
     public Button restartButton;
     public Button pauseButton;
+    public TextMeshProUGUI gameOverText;
 
     [SerializeField] private TextScalingEffect[] _textScalingEffect;
     [Header("Score Display")]
@@ -194,6 +195,17 @@ public class UIManager : MonoBehaviour
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(true);
+            if (gameOverText != null)
+            {
+                gameOverText.text = "Game Over!";
+                gameOverText.gameObject.SetActive(true);
+            }
+            if (restartButton != null)
+            {
+                restartButton.onClick.RemoveAllListeners();
+                restartButton.onClick.AddListener(() => GameManager.Instance.Restart());
+                restartButton.gameObject.SetActive(true);
+            }
         }
     }
     

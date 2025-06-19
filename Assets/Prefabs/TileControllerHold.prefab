@@ -505,7 +505,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42b96bb3651fbbd4a87eebfadb9b8692, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fallSpeed: 10
+  fallSpeed: 5
   startPoint: {fileID: 1663931956226417089}
   endPoint: {fileID: 8175681133859510961}
   starObject: {fileID: 889873347529151264}
