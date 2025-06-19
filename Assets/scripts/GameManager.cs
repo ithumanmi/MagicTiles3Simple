@@ -25,9 +25,15 @@ public class GameManager : MonoBehaviour
     
     [Header("Audio")]
     public AudioSource musicSource;
+    public AudioSource sfxSource;
     public AudioClip perfectSound;
     public AudioClip goodSound;
     public AudioClip missSound;
+    public AudioClip loseClip;
+    public AudioClip winClip;
+    public AudioClip clickTileClip;
+    public AudioClip slideTileHoldClip;
+    public AudioClip combosfx;
     
     private bool isGameOver = false;
     private void Awake()
@@ -77,6 +83,11 @@ public class GameManager : MonoBehaviour
         {
             progressBarWithStars.UpdateProgress(0);
         }
+        // Phát lại nhạc nền nếu có
+        if (MusicManager.Instance != null && MusicManager.Instance.defaultMusic != null)
+        {
+            MusicManager.Instance.PlayMusic(MusicManager.Instance.defaultMusic);
+        }
     }
     
     public void AddCombo(int _combo)
@@ -99,14 +110,7 @@ public class GameManager : MonoBehaviour
             progressBarWithStars.UpdateProgress(score);
         }
     }
-    
-    void PlaySound(AudioClip clip)
-    {
-        if (clip != null && musicSource != null)
-        {
-            musicSource.PlayOneShot(clip);
-        }
-    }
+
     
     public void GameOver()
     {
@@ -120,7 +124,15 @@ public class GameManager : MonoBehaviour
             uiManager.ShowGameOver();
         }
         
-        //Debug.Log($"Game Over! Final Score: {score}, Max Combo: {maxCombo}");
+        PlaySFX(loseClip);
+        MusicManager.Instance?.StopMusic(); // Dừng nhạc nền khi game over
+    }
+    
+    public void Win()
+    {
+        // ... logic win ...
+        PlaySFX(winClip);
+        MusicManager.Instance?.StopMusic(); // Dừng nhạc nền khi win
     }
     
     public void Restart()
@@ -132,5 +144,13 @@ public class GameManager : MonoBehaviour
     public void PauseGame()
     {
         Time.timeScale = Time.timeScale == 0f ? 1f : 0f;
+    }
+    
+    public void PlaySFX(AudioClip clip)
+    {
+        if (clip != null && sfxSource != null)
+        {
+            sfxSource.PlayOneShot(clip);
+        }
     }
 } 

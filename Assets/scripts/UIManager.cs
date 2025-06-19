@@ -103,6 +103,7 @@ public class UIManager : MonoBehaviour
             _lastTextScalingEffect.Stop();
         }
         var index = Random.Range(0, _textScalingEffect.Length - 1);
+        GameManager.Instance.PlaySFX(GameManager.Instance.combosfx); 
         _lastTextScalingEffect = _textScalingEffect[index];
         _lastTextScalingEffect.Play();
 

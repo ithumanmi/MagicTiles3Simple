@@ -36,7 +36,7 @@ public class TileSpawner : MonoBehaviour
         // Spawn tile thường
         if (timer >= beatInterval)
         {
-            SpawnTile(true);
+            SpawnTile();
             timer -= beatInterval;
         }
 

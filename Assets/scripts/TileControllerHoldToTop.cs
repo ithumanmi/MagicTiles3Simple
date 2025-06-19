@@ -29,6 +29,12 @@ public class TileControllerHoldToTop : MonoBehaviour
     private bool isPointerInside = false; // Để kiểm tra khi chạm vào star
     private bool isArrowHeld = false;
 
+    public AudioSource sfxSource; // Kéo AudioSource vào đây
+    public AudioClip loseClip;
+    public AudioClip winClip;
+    public AudioClip clickTileClip;
+    public AudioClip slideTileHoldClip;
+
     private void Awake()
     {
         originalY = transform.localScale.y; // Lưu lại giá trị gốc của Y scale

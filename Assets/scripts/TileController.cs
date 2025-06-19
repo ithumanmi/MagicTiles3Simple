@@ -100,14 +100,12 @@ public class TileController : MonoBehaviour
     {
         if (!isActive) return;
         isActive = false; // Dừng fall ngay lập tức
-
         // Thêm điểm và tăng combo
         GameManager.Instance.AddCombo(1);
-        
+        GameManager.Instance.PlaySFX(GameManager.Instance.clickTileClip); // Phát âm thanh click tile
         // Hide original tile
         if (spriteRenderer != null)
             spriteRenderer.enabled = false;
-
         // Kích hoạt particle effect
         if (hitParticle != null)
         {
@@ -122,9 +120,7 @@ public class TileController : MonoBehaviour
             tapEffectPrefab.SetActive(true);
             tapEffectPrefab.transform.DOScale(Vector3.zero, 0.5f)
                 .SetEase(Ease.InBack);
-                
         }
-        
     }
     
     void Missed()
