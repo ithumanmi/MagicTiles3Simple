@@ -72,8 +72,6 @@ sysinfo.txt
 *.unitypackage
 
 # Package manager
-Packages/manifest.json
-Packages/packages-lock.json
 
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # AssetStoreTools* 
