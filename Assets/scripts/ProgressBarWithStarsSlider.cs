@@ -49,7 +49,7 @@ public class ProgressBarWithStarsSlider : MonoBehaviour
 
                     if (!GameManager.Instance.IsEasy)
                     {
-                        GameManager.Instance.beatInterval -= 0.1f; // Giảm thời gian giữa các nhịp khi đạt sao mới
+                        GameManager.Instance.beatInterval -= 0.17f; // Giảm thời gian giữa các nhịp khi đạt sao mới
                     }
                 }
              

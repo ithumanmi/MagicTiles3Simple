@@ -4,7 +4,7 @@
 
 1.  **Clone Repository:**
     ```bash
-    git clone <your-repository-link>
+    git clone https://github.com/ithumanmi/MagicTiles3Simple
     ```
 2.  **Mở Project trong Unity:**
     *   Sử dụng Unity Hub để mở project.
@@ -20,7 +20,7 @@
 
 Dự án được xây dựng dựa trên các mẫu thiết kế phổ biến và hiệu quả trong phát triển game bằng Unity.
 
-*   **Singleton Pattern (`GameManager`, `TileSpawner`):**
+*   **Singleton Pattern (`GameManager`, `TileSpawner`, `MusicManager`):**
     *   Sử dụng Singleton để đảm bảo chỉ có một thực thể của các manager chính tồn tại và có thể được truy cập dễ dàng từ bất kỳ đâu trong project (ví dụ: `GameManager.Instance`). Điều này giúp quản lý trạng thái game (điểm số, combo, win/loss) một cách tập trung.
 
 *   **Object Pooling (`TilePooler`):**
@@ -30,8 +30,6 @@ Dự án được xây dựng dựa trên các mẫu thiết kế phổ biến v
     *   Game có thể tự động tăng độ khó theo thời gian bằng cách giảm `beatInterval` (tốc độ ra tile) trong `GameManager`.
     *   Cung cấp tùy chọn `IsEasy` để tắt tính năng này, cho phép người chơi trải nghiệm ở một tốc độ không đổi.
 
-*   **Kiến trúc dựa trên Component (Component-Based Architecture):**
-    *   Tuân thủ triệt để kiến trúc của Unity, mỗi đối tượng trong game được cấu thành từ các component độc lập (ví dụ: `TileController`, `SpriteRenderer`, `Collider2D`). Logic game được chia nhỏ vào các script khác nhau, giúp dễ quản lý và tái sử dụng.
 
 *   **Quản lý tập trung:**
     *   Các thành phần cốt lõi như `GameManager`, `UIManager`, `TileSpawner`, `MusicManager` được thiết kế để quản lý các khía cạnh riêng biệt của game, giúp code có tổ chức và dễ bảo trì.
