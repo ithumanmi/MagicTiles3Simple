@@ -6688,12 +6688,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   score: 0
   comboResetTime: 0.8
+  beatInterval: 0.8
   combo: 0
   perfectScore: 100
   goodScore: 50
   missScore: 0
   comboMultiplier: 0.1
-  starThresholds: 0a000000140000001e000000
+  starThresholds: 320000006400000096000000
   uiManager: {fileID: 1021320611}
   progressBarWithStars: {fileID: 401732759}
 --- !u!4 &1672056362
@@ -7068,7 +7069,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridManager: {fileID: 971380341}
-  beatInterval: 0.8
   holdIntervalMin: 2
   holdIntervalMax: 5
   musicSource: {fileID: 0}

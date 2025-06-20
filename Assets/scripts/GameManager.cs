@@ -25,8 +25,10 @@ public class GameManager : MonoBehaviour
     [Header("UI References")]
     public UIManager uiManager;
     public ProgressBarWithStarsSlider progressBarWithStars;
-    
-   
+
+    public float beatInterval = 1f;
+    public bool IsEasy;
+
     private bool isGameOver = false;
     private void Awake()
     {

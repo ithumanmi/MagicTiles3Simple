@@ -5,7 +5,6 @@ public class TileSpawner : MonoBehaviour
 {
     public static TileSpawner Instance;
     public GridManager gridManager;
-    public float beatInterval = 0.5f; // Thời gian giữa các nhịp (giây)
     public float holdIntervalMin = 1f;
     public float holdIntervalMax = 2f;
     public AudioSource musicSource;
@@ -37,10 +36,11 @@ public class TileSpawner : MonoBehaviour
         holdTimer += Time.deltaTime;
 
         // Spawn tile thường
-        if (timer >= beatInterval)
+        if (timer >= GameManager.Instance.beatInterval)
         {
             SpawnTile(false);
-            timer -= beatInterval;
+
+            timer -= GameManager.Instance.beatInterval;
         }
 
         // Spawn tile hold sau mỗi holdInterval
@@ -50,7 +50,7 @@ public class TileSpawner : MonoBehaviour
             holdTimer = 0f;
             holdInterval = Random.Range(holdIntervalMin, holdIntervalMax); // random lại cho lần sau
             canSpawnHold = false; // Tạm thời không cho spawn hold tile
-            Invoke("EnableHoldSpawn", beatInterval * 2); // Cho phép spawn hold tile sau 2 beat
+            Invoke("EnableHoldSpawn", GameManager.Instance.beatInterval * 2); // Cho phép spawn hold tile sau 2 beat
         }
     }
 

@@ -46,6 +46,11 @@ public class ProgressBarWithStarsSlider : MonoBehaviour
 
                 
                     ShowStartShow(i);
+
+                    if (!GameManager.Instance.IsEasy)
+                    {
+                        GameManager.Instance.beatInterval -= 0.1f; // Giảm thời gian giữa các nhịp khi đạt sao mới
+                    }
                 }
              
             }
