@@ -7,11 +7,7 @@ public class TileController : BaseTileController
     public float perfectY = -3.5f; // Vị trí Y cho "Perfect"
     public float goodWindow = 0.5f; // Khoảng cho "Good"
     public float perfectWindow = 0.2f; // Khoảng cho "Perfect"
-    
-    [Header("Visual Feedback")]
-    public GameObject perfectEffect;
-    public GameObject goodEffect;
-    public GameObject missEffect;
+
     public GameObject tapEffectPrefab; // Gán là child object trong prefab
     public GameObject tapEffectBorderPrefab; // Gán là child object trong prefab
     public ParticleSystem hitParticle; // Hiệu ứng particle khi chạm tile

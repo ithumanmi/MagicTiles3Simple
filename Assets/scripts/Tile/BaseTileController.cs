@@ -10,13 +10,20 @@ public abstract class BaseTileController : MonoBehaviour
     protected int laneIndex = -1;
     protected float _originalScaleY;
 
+
     protected virtual void Start()
     {
+    
         spriteRenderer = GetComponent<SpriteRenderer>();
-        _originalScaleY = transform.localScale.y;
+  
         FitWidthToColumn();
         if (GetComponent<Collider2D>() == null)
             gameObject.AddComponent<BoxCollider2D>();
+    }
+
+    private void Awake()
+    {
+        _originalScaleY = transform.localScale.y;
     }
 
     public virtual void ResetState()
