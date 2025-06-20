@@ -176,35 +176,35 @@ public class TileControllerHoldToTop : MonoBehaviour
     public interface ITileLaneSetter { void SetLaneIndex(int lane); }
     public void SetLaneIndex(int lane) { laneIndex = lane; }
 
-#if UNITY_ANDROID || UNITY_IOS
-    void OnTouch()
-    {
-        if (Input.touchCount > 0)
-        {
-            Touch touch = Input.GetTouch(0);
-            Vector3 worldPos = mainCam.ScreenToWorldPoint(touch.position);
-            Vector2 point = new Vector2(worldPos.x, worldPos.y);
-            if (touch.phase == TouchPhase.Began && starArea != null && starArea.OverlapPoint(point))
-            {
-                StartHold();
-                isPointerInside = true;
-            }
-            else if (touch.phase == TouchPhase.Moved && isHolding && starArea != null)
-            {
-                bool nowInside = starArea.OverlapPoint(point);
-                if (isPointerInside && !nowInside)
-                {
-                    isPointerInside = false;
-                }
-            }
-            else if ((touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled) && isHolding && isPointerInside && !hasTriggered)
-            {
-                StopHold();
-            }
-        }
-    }
-    void LateUpdate() { OnTouch(); }
-#endif
+//#if UNITY_ANDROID || UNITY_IOS
+//    void OnTouch()
+//    {
+//        if (Input.touchCount > 0)
+//        {
+//            Touch touch = Input.GetTouch(0);
+//            Vector3 worldPos = mainCam.ScreenToWorldPoint(touch.position);
+//            Vector2 point = new Vector2(worldPos.x, worldPos.y);
+//            if (touch.phase == TouchPhase.Began && starArea != null && starArea.OverlapPoint(point))
+//            {
+//                StartHold();
+//                isPointerInside = true;
+//            }
+//            else if (touch.phase == TouchPhase.Moved && isHolding && starArea != null)
+//            {
+//                bool nowInside = starArea.OverlapPoint(point);
+//                if (isPointerInside && !nowInside)
+//                {
+//                    isPointerInside = false;
+//                }
+//            }
+//            else if ((touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled) && isHolding && isPointerInside && !hasTriggered)
+//            {
+//                StopHold();
+//            }
+//        }
+//    }
+//    void LateUpdate() { OnTouch(); }
+//#endif
 
 
     // Khi user chạm vào star
