@@ -25,11 +25,6 @@ public class GridAutoFit : MonoBehaviour
 
         // Lấy GridLayout
         GridLayout gridLayout = GetComponent<GridLayout>();
-        if (gridLayout != null)
-        {
-            // Không thể set cellSize trực tiếp, nhưng có thể dùng custom script để visualize
-            Debug.Log($"Set Cell Size in Inspector: X = {cellWidth}, Y = {cellHeight}");
-        }
 
         // Gợi ý: tự động căn giữa grid
         float gridWorldWidth = cellWidth * columnCount;

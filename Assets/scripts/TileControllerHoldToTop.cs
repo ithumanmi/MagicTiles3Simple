@@ -15,6 +15,13 @@ public class TileControllerHoldToTop : MonoBehaviour
     public GameObject slideEffectPrefab; // Prefab hiệu ứng trượt
     private GameObject slideEffectInstance;
 
+    [Header("Blinking Effect")]
+    public float blinkSpeed = 0.2f; // Tốc độ nhấp nháy
+    private bool isBlinking = false;
+    private float blinkTimer = 0f;
+    private Color originalColor; // Lưu màu gốc
+    private Color blinkColor = Color.yellow; // Màu nhấp nháy
+
     public ArrowTouchHandler arrow;
     
     private bool isActive = true;
@@ -27,13 +34,6 @@ public class TileControllerHoldToTop : MonoBehaviour
     public Transform star; // Ngôi sao (con của tile hold)
     private bool isHoldingArrow = false;
     private bool isPointerInside = false; // Để kiểm tra khi chạm vào star
-    private bool isArrowHeld = false;
-
-    public AudioSource sfxSource; // Kéo AudioSource vào đây
-    public AudioClip loseClip;
-    public AudioClip winClip;
-    public AudioClip clickTileClip;
-    public AudioClip slideTileHoldClip;
 
     private void Awake()
     {
@@ -43,6 +43,7 @@ public class TileControllerHoldToTop : MonoBehaviour
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        originalColor = spriteRenderer.color; // Lưu màu gốc
         FitWidthToColumn();
         if (GetComponent<Collider2D>() == null)
             gameObject.AddComponent<BoxCollider2D>();
@@ -84,13 +85,27 @@ public class TileControllerHoldToTop : MonoBehaviour
         {
             if (arrow.transform.position.y >= endPoint.position.y)
             {
-                isActive = false; // Dừng rơi
+                isActive = false; 
                 GameManager.Instance.AddCombo(1);
                 ReleaseArrow();
+                StartBlinking(); // Bắt đầu hiệu ứng nhấp nháy
+            }
+        }
+        // Xử lý hiệu ứng nhấp nháy
+        if (isBlinking)
+        {
+            blinkTimer += Time.deltaTime;
+            if (blinkTimer >= blinkSpeed)
+            {
+                blinkTimer = 0f;
+                if (spriteRenderer != null)
+                {
+                    // Thay đổi màu giữa màu gốc và màu nhấp nháy
+                    spriteRenderer.color = (spriteRenderer.color == originalColor) ? blinkColor : originalColor;
+                }
             }
         }
 
-      
     }
 
     void Missed()
@@ -102,7 +117,11 @@ public class TileControllerHoldToTop : MonoBehaviour
         DeactivateAndReturnToPool();
     }
 
-
+    void StartBlinking()
+    {
+        isBlinking = true;
+        blinkTimer = 0f;
+    }
     void FitWidthToColumn()
     {
         int gridWidth = 4;
@@ -124,12 +143,14 @@ public class TileControllerHoldToTop : MonoBehaviour
     {
         isActive = true;
         isHolding = false;
+        isBlinking = false; // Reset trạng thái nhấp nháy
+        blinkTimer = 0f;
         if (spriteRenderer == null)
             spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null)
         {
             spriteRenderer.enabled = true;
-            spriteRenderer.color = Color.white;
+            spriteRenderer.color = originalColor; // Khôi phục màu gốc
         }
       
         FitWidthToColumn();
@@ -141,10 +162,13 @@ public class TileControllerHoldToTop : MonoBehaviour
     {
         isActive = false;
         isPointerInside = false; // Reset trạng thái pointer
+        isBlinking = false; // Dừng hiệu ứng nhấp nháy
         arrow.isArrowHeld = false; // Reset trạng thái của arrow
         arrow.gameObject.SetActive(false);  
         if (spriteRenderer != null)
-            spriteRenderer.enabled = true;
+        {
+            spriteRenderer.enabled = true; // Đảm bảo sprite được hiển thị khi trả về pool
+        }
         if (laneIndex >= 0 && TileSpawner.Instance != null) TileSpawner.Instance.SetLaneFree(laneIndex);
         TilePooler.ReturnTile(gameObject, true); // true = tile hold
     }
@@ -195,6 +219,7 @@ public class TileControllerHoldToTop : MonoBehaviour
             arrow.transform.SetParent(null, true);
         }
         isPointerInside = true; // Đánh dấu là đang giữ star
+        MusicManager.Instance.PlaySFX(MusicManager.Instance.slideTileHoldClip); // Phát âm thanh click tile
     }
     public void OnArrowPointerDown()
     {

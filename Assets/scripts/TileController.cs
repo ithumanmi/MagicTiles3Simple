@@ -102,7 +102,7 @@ public class TileController : MonoBehaviour
         isActive = false; // Dừng fall ngay lập tức
         // Thêm điểm và tăng combo
         GameManager.Instance.AddCombo(1);
-        GameManager.Instance.PlaySFX(GameManager.Instance.clickTileClip); // Phát âm thanh click tile
+        MusicManager.Instance.PlaySFX(MusicManager.Instance.clickTileClip); // Phát âm thanh click tile
         // Hide original tile
         if (spriteRenderer != null)
             spriteRenderer.enabled = false;
@@ -137,7 +137,7 @@ public class TileController : MonoBehaviour
         ResetState();
         DeactivateAndReturnToPool();
     }
-    
+    public void SetLaneIndex(int lane) { laneIndex = lane; }
     void ShowEffect(GameObject effectPrefab)
     {
         if (effectPrefab != null)

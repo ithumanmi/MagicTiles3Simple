@@ -316,7 +316,7 @@ MonoBehaviour:
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 80, y: 80}
-  m_Spacing: {x: 20, y: 0}
+  m_Spacing: {x: 20.48, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
 --- !u!1 &77431171
@@ -1009,7 +1009,7 @@ RectTransform:
   m_GameObject: {fileID: 208812451}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 59685045}
@@ -1268,7 +1268,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &337685772
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1714,7 +1714,7 @@ MonoBehaviour:
   - {fileID: 77431173}
   starOn: {fileID: 21300000, guid: 6476fa37afe8f46a7825bf79a9e5d28d, type: 3}
   starOff: {fileID: 21300000, guid: 2ac1485ab070387479d19ed174cf4f25, type: 3}
-  starThresholds: 050000000a0000000f000000
+  starThresholds: 0a000000140000001e000000
   starShow:
   - {fileID: 1208483431}
   - {fileID: 208812453}
@@ -4412,7 +4412,7 @@ RectTransform:
   m_GameObject: {fileID: 1089531096}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 59685045}
@@ -4420,7 +4420,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 456.95, y: -10}
+  m_AnchoredPosition: {x: 537.7, y: -10}
   m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1089531098
@@ -5233,7 +5233,7 @@ RectTransform:
   m_GameObject: {fileID: 1208483429}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 59685045}
@@ -5241,7 +5241,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 256.95, y: -10}
+  m_AnchoredPosition: {x: 180, y: -10}
   m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1208483431
@@ -6495,7 +6495,7 @@ MonoBehaviour:
   winClip: {fileID: 8300000, guid: cd0ee5b99648e5d4195f12a24a4cf204, type: 3}
   clickTileClip: {fileID: 8300000, guid: d5108dfbe0008364ba1431fd9e5c90ec, type: 3}
   slideTileHoldClip: {fileID: 8300000, guid: e7a913223a51a2e42841e37061ae8912, type: 3}
-  combosfx: {fileID: 0}
+  combosfx: {fileID: 8300000, guid: 2ad7b918a40b60e4ca6d89aac5d85416, type: 3}
 --- !u!4 &1672056362
 Transform:
   m_ObjectHideFlags: 0

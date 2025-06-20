@@ -19,22 +19,14 @@ public class GameManager : MonoBehaviour
     public int missScore = 0;
     public float comboMultiplier = 0.1f; // Each combo adds 10% to the base score
     
+    [Header("Star Thresholds")]
+    public int[] starThresholds; // Mốc điểm cho từng sao
+    
     [Header("UI References")]
     public UIManager uiManager;
     public ProgressBarWithStarsSlider progressBarWithStars;
     
-    [Header("Audio")]
-    public AudioSource musicSource;
-    public AudioSource sfxSource;
-    public AudioClip perfectSound;
-    public AudioClip goodSound;
-    public AudioClip missSound;
-    public AudioClip loseClip;
-    public AudioClip winClip;
-    public AudioClip clickTileClip;
-    public AudioClip slideTileHoldClip;
-    public AudioClip combosfx;
-    
+   
     private bool isGameOver = false;
     private void Awake()
     {
@@ -83,11 +75,6 @@ public class GameManager : MonoBehaviour
         {
             progressBarWithStars.UpdateProgress(0);
         }
-        // Phát lại nhạc nền nếu có
-        if (MusicManager.Instance != null && MusicManager.Instance.defaultMusic != null)
-        {
-            MusicManager.Instance.PlayMusic(MusicManager.Instance.defaultMusic);
-        }
     }
     
     public void AddCombo(int _combo)
@@ -109,13 +96,20 @@ public class GameManager : MonoBehaviour
         {
             progressBarWithStars.UpdateProgress(score);
         }
+
+        // Check for win condition
+        if (starThresholds != null && starThresholds.Length > 0 && score >= starThresholds[starThresholds.Length - 1])
+        {
+            Win();
+        }
     }
 
     
     public void GameOver()
     {
         if (isGameOver) return;
-        
+        MusicManager.Instance.PlaySFX(MusicManager.Instance.loseClip);
+        MusicManager.Instance?.StopMusic(); // Dừng nhạc nền khi game over
         isGameOver = true;
         Time.timeScale = 0f;
         
@@ -124,14 +118,22 @@ public class GameManager : MonoBehaviour
             uiManager.ShowGameOver();
         }
         
-        PlaySFX(loseClip);
-        MusicManager.Instance?.StopMusic(); // Dừng nhạc nền khi game over
+
     }
     
     public void Win()
     {
-        // ... logic win ...
-        PlaySFX(winClip);
+        if (isGameOver) return;
+
+        isGameOver = true;
+        Time.timeScale = 0f; // Pause the game
+
+        if (uiManager != null)
+        {
+            uiManager.ShowWin(); // Assuming UIManager has a ShowWin method
+        }
+
+        MusicManager.Instance.PlaySFX(MusicManager.Instance.winClip);
         MusicManager.Instance?.StopMusic(); // Dừng nhạc nền khi win
     }
     
@@ -146,11 +148,5 @@ public class GameManager : MonoBehaviour
         Time.timeScale = Time.timeScale == 0f ? 1f : 0f;
     }
     
-    public void PlaySFX(AudioClip clip)
-    {
-        if (clip != null && sfxSource != null)
-        {
-            sfxSource.PlayOneShot(clip);
-        }
-    }
+   
 } 

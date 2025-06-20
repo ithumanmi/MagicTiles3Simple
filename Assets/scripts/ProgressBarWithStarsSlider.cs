@@ -11,14 +11,17 @@ public class ProgressBarWithStarsSlider : MonoBehaviour
     public Image[] starImages; // Các ngôi sao
     public Sprite starOn, starOff; // Sprite vàng và trắng
 
-    [Header("Star Thresholds")]
-    public int[] starThresholds; // Mốc điểm cho từng sao
-
     public Image[] starShow;
 
     public void UpdateProgress(int score)
     {
-         
+        int[] starThresholds = GameManager.Instance.starThresholds;
+        if (starThresholds == null || starThresholds.Length == 0)
+        {
+            Debug.LogError("Star thresholds are not set in GameManager!");
+            return;
+        }
+
         // Tween fill bar
         float targetFill = Mathf.Clamp01((float)score / starThresholds[starThresholds.Length - 1]);
 
@@ -41,10 +44,7 @@ public class ProgressBarWithStarsSlider : MonoBehaviour
                     starImages[i].transform.localScale = Vector3.one * 1.5f;
                     starImages[i].transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
 
-                    starShow[i].transform.DOKill();
-                    starShow[i].transform.localScale = Vector3.one * 2f;
-                    starShow[i].transform.DOScale(1f, 0.3f).SetEase(Ease.OutBack);
-
+                
                     ShowStartShow(i);
                 }
              
@@ -64,7 +64,10 @@ public class ProgressBarWithStarsSlider : MonoBehaviour
             if (i <= index)
             {
                 starShow[i].transform.DOKill();
-                starShow[i].transform.DOScale(2f, 0.3f).SetEase(Ease.OutBack).OnComplete(() =>
+                starShow[i].transform.DOScale(2f, 0.3f)
+                .SetDelay(0.3f)
+                .SetEase(Ease.OutBack)
+                .OnComplete(() =>
                 {
                     HideStarShow();
                 });

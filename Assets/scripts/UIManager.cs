@@ -9,19 +9,10 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI comboText;
     public GameObject gameOverPanel;
+    public GameObject winPanel;
     public Button restartButton;
-    public Button pauseButton;
-    public TextMeshProUGUI gameOverText;
 
     [SerializeField] private TextScalingEffect[] _textScalingEffect;
-    [Header("Score Display")]
-    public Text perfectText;
-    public Text goodText;
-    public Text missText;
-    
-    private int perfectCount = 0;
-    private int goodCount = 0;
-    private int missCount = 0;
 
     private TextScalingEffect _lastTextScalingEffect;
 
@@ -36,7 +27,6 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("UIManager: Bắt đầu khởi tạo");
         SetupUI();
         // Ẩn combo text khi bắt đầu
         if (comboText != null)
@@ -47,24 +37,13 @@ public class UIManager : MonoBehaviour
     
     void SetupUI()
     {
-        // Kiểm tra các UI elements
-        Debug.Log($"UIManager: scoreText = {(scoreText != null ? "OK" : "NULL")}");
-        Debug.Log($"UIManager: comboText = {(comboText != null ? "OK" : "NULL")}");
-        Debug.Log($"UIManager: perfectText = {(perfectText != null ? "OK" : "NULL")}");
-        Debug.Log($"UIManager: goodText = {(goodText != null ? "OK" : "NULL")}");
-        Debug.Log($"UIManager: missText = {(missText != null ? "OK" : "NULL")}");
         
         // Setup restart button
         if (restartButton != null)
         {
             restartButton.onClick.AddListener(() => GameManager.Instance.Restart());
         }
-        
-        // Setup pause button
-        if (pauseButton != null)
-        {
-            pauseButton.onClick.AddListener(PauseGame);
-        }
+       
         
         // Hide game over panel initially
         if (gameOverPanel != null)
@@ -72,7 +51,11 @@ public class UIManager : MonoBehaviour
             gameOverPanel.SetActive(false);
         }
         
-        UpdateScoreDisplay();
+        // Hide win panel initially
+        if (winPanel != null)
+        {
+            winPanel.SetActive(false);
+        }
     }
     
     public void UpdateScore(int score)
@@ -103,7 +86,7 @@ public class UIManager : MonoBehaviour
             _lastTextScalingEffect.Stop();
         }
         var index = Random.Range(0, _textScalingEffect.Length - 1);
-        GameManager.Instance.PlaySFX(GameManager.Instance.combosfx); 
+        MusicManager.Instance.PlaySFX(MusicManager.Instance.combosfx); 
         _lastTextScalingEffect = _textScalingEffect[index];
         _lastTextScalingEffect.Play();
 
@@ -159,54 +142,29 @@ public class UIManager : MonoBehaviour
             comboText.transform.DOScale(0, 0.15f).SetEase(Ease.InBack);
         }
     }
-    
-    public void AddPerfect()
-    {
-        perfectCount++;
-        UpdateScoreDisplay();
-        Debug.Log($"UIManager: Perfect count = {perfectCount}");
-    }
-    
-    public void AddGood()
-    {
-        goodCount++;
-        UpdateScoreDisplay();
-        Debug.Log($"UIManager: Good count = {goodCount}");
-    }
-    
-    public void AddMiss()
-    {
-        missCount++;
-        UpdateScoreDisplay();
-        Debug.Log($"UIManager: Miss count = {missCount}");
-    }
-    
-    void UpdateScoreDisplay()
-    {
-        if (perfectText != null)
-            perfectText.text = "Perfect: " + perfectCount;
-        if (goodText != null)
-            goodText.text = "Good: " + goodCount;
-        if (missText != null)
-            missText.text = "Miss: " + missCount;
-    }
-    
+  
     public void ShowGameOver()
     {
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(true);
-            if (gameOverText != null)
-            {
-                gameOverText.text = "Game Over!";
-                gameOverText.gameObject.SetActive(true);
-            }
+          
             if (restartButton != null)
             {
                 restartButton.onClick.RemoveAllListeners();
                 restartButton.onClick.AddListener(() => GameManager.Instance.Restart());
                 restartButton.gameObject.SetActive(true);
             }
+        }
+    }
+
+    public void ShowWin()
+    {
+        if (winPanel != null)
+        {
+            winPanel.SetActive(true);
+            // Bạn có thể thêm các logic khác cho màn hình win ở đây
+            // ví dụ: gán lại listener cho nút restart nếu có
         }
     }
     
@@ -217,16 +175,12 @@ public class UIManager : MonoBehaviour
     
     public void ResetStats()
     {
-        perfectCount = 0;
-        goodCount = 0;
-        missCount = 0;
-        UpdateScoreDisplay();
+      
         // Ẩn combo text khi reset
         if (comboText != null)
         {
             comboText.gameObject.SetActive(false);
-        }
-        Debug.Log("UIManager: Reset stats");
+        }   
     }
 
     public void ShowStarCountAtStarImage(int starCount)
