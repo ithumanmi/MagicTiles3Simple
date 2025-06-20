@@ -44,14 +44,14 @@ public class TileSpawner : MonoBehaviour
         }
 
         // Spawn tile hold sau mỗi holdInterval
-        if (holdTimer >= holdInterval && canSpawnHold)
-        {
-            SpawnTile(true);
-            holdTimer = 0f;
-            holdInterval = Random.Range(holdIntervalMin, holdIntervalMax); // random lại cho lần sau
-            canSpawnHold = false; // Tạm thời không cho spawn hold tile
-            Invoke("EnableHoldSpawn", GameManager.Instance.beatInterval * 2); // Cho phép spawn hold tile sau 2 beat
-        }
+        //if (holdTimer >= holdInterval && canSpawnHold)
+        //{
+        //    SpawnTile(true);
+        //    holdTimer = 0f;
+        //    holdInterval = Random.Range(holdIntervalMin, holdIntervalMax); // random lại cho lần sau
+        //    canSpawnHold = false; // Tạm thời không cho spawn hold tile
+        //    Invoke("EnableHoldSpawn", GameManager.Instance.beatInterval * 2); // Cho phép spawn hold tile sau 2 beat
+        //}
     }
 
     void EnableHoldSpawn()

@@ -20,10 +20,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private ParticleSystem[] comboParticles;
     private ParticleSystem _lastPlayedParticle;
 
-    [Header("Star Count Display")]
-    public TextMeshProUGUI starCountText;
-    public Transform starImage;
-    public float starShowDuration = 1f;
 
     void Start()
     {
@@ -63,6 +59,17 @@ public class UIManager : MonoBehaviour
         if (scoreText != null)
         {
             scoreText.text = score.ToString();
+
+            // Tạo gradient ngẫu nhiên
+            TMP_ColorGradient randomGradient = new TMP_ColorGradient();
+            randomGradient.topLeft = Random.ColorHSV();
+            randomGradient.topRight = Random.ColorHSV();
+            randomGradient.bottomLeft = Random.ColorHSV();
+            randomGradient.bottomRight = Random.ColorHSV();
+
+            scoreText.colorGradientPreset = randomGradient;
+            scoreText.enableVertexGradient = true;
+
             // Hiệu ứng nhúng nhảy khi cộng điểm
             scoreText.transform.DOKill();
             scoreText.transform.localScale = Vector3.one * 0.7f;
@@ -168,11 +175,6 @@ public class UIManager : MonoBehaviour
         }
     }
     
-    void PauseGame()
-    {
-        Time.timeScale = Time.timeScale == 0f ? 1f : 0f;
-    }
-    
     public void ResetStats()
     {
       
@@ -181,38 +183,5 @@ public class UIManager : MonoBehaviour
         {
             comboText.gameObject.SetActive(false);
         }   
-    }
-
-    public void ShowStarCountAtStarImage(int starCount)
-    {
-        if (starCountText != null && starImage != null)
-        {
-            starCountText.text = "x " + starCount.ToString();
-            starCountText.gameObject.SetActive(true);
-
-            // Đặt vị trí starCountText trùng với starImage
-            starCountText.rectTransform.position = starImage.position;
-
-            // Hiệu ứng scale pop
-            starCountText.transform.DOKill();
-            starCountText.transform.localScale = Vector3.one * 0.7f;
-            starCountText.transform.DOScale(1.2f, 0.15f)
-                .SetEase(Ease.OutBack)
-                .OnComplete(() => {
-                    starCountText.transform.DOScale(1f, 0.15f).SetEase(Ease.InOutSine);
-                });
-
-            CancelInvoke("HideStarShow");
-            Invoke("HideStarShow", starShowDuration);
-        }
-    }
-
-    private void HideStarShow()
-    {
-        if (starCountText != null)
-        {
-            starCountText.gameObject.SetActive(false);
-            starCountText.transform.localScale = Vector3.one;
-        }
     }
 } 

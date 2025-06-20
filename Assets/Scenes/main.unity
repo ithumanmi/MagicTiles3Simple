@@ -6688,7 +6688,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   score: 0
   comboResetTime: 0.8
-  beatInterval: 0.8
   combo: 0
   perfectScore: 100
   goodScore: 50
@@ -6697,6 +6696,8 @@ MonoBehaviour:
   starThresholds: 320000006400000096000000
   uiManager: {fileID: 1021320611}
   progressBarWithStars: {fileID: 401732759}
+  beatInterval: 0.8
+  IsEasy: 1
 --- !u!4 &1672056362
 Transform:
   m_ObjectHideFlags: 0
